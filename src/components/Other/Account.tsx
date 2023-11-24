@@ -22,7 +22,13 @@ function Account() {
         }
       };
       
-      const [AccountData, setAccountData] = useState([]);
+      const [AccountData, setAccountData] = useState({
+        names:"",
+        gender:"",
+        email:"",
+        phone:"",
+        subject_taught:"",
+      });
       
       try {
         const Fetch = async () => {

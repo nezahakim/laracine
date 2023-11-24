@@ -36,7 +36,7 @@ function Homework() {
     names: "",
     class: "",
     marks: "",
-    sub_date: "",
+    sub_data: "",
     pre_date: "",
     author:"",
   });
@@ -139,8 +139,8 @@ function Homework() {
   const [display, setDisplay] = useState({
     condition: false,
   });
-  const HandleUpdate = (e: string, index: string) => {
-    window.localStorage.setItem("Question_number", index);
+  const HandleUpdate = (e: string, index: Number) => {
+    window.localStorage.setItem("Question_number", ""+index+"");
     try {
       const a = async () => {
         const data = await axios.get("http://localhost:8000/question/" + e);
@@ -188,8 +188,8 @@ function Homework() {
     }
   };
   
-  const handleDelete = (questionId: string, index: string) => {
-    window.localStorage.setItem("Delete_Question_Number", index);
+  const handleDelete = (questionId: string, index: Number) => {
+    window.localStorage.setItem("Delete_Question_Number", ""+index+"");
     window.localStorage.setItem("DeleteQuestion_id", questionId);
     const alertDelete = document.querySelector(".alert-delete") as HTMLElement | null;
     if (alertDelete) {

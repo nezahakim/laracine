@@ -10,7 +10,20 @@ import session, { unique_id } from "../auth/session";
 
 function Homeworks() {
   const [user, setUser] = useState(false);
-  const [homework, setHomework] = useState([]);
+
+  interface HomeworkItem {
+    course: string;
+    class: string;
+    marks: string;
+    sub_data: string;
+    pre_date: string;
+    author: string; 
+    Hid: string; 
+    names: string; 
+  }
+  
+  const [homework, setHomework] = useState<HomeworkItem[]>([]);
+
 
   useEffect(() => {
     const fetchData = async () => {
@@ -61,7 +74,7 @@ function Homeworks() {
   };
   
 
-  const [error, setError] = useState([]);
+  const [error, setError] = useState("");
   const HandleSubmit = (e: { preventDefault: () => void; }) => {
     e.preventDefault();
 
