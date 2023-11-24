@@ -62,7 +62,7 @@ function Homework() {
     setInputs((prev: any) => ({ ...prev, [e.target.name]: [e.target.value] }));
     setUpdateData((prev: any) => ({ ...prev, [e.target.name]: [e.target.value] }));
   };
-  const [error, setError] = useState([]);
+  const [error, setError] = useState("");
 
   const HandleSubmit = (e: { preventDefault: () => void; }) => {
     e.preventDefault();
