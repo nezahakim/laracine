@@ -30,16 +30,15 @@ function Homework() {
       Fetch();
     }, 300);
   }, []);
-
-  interface HomeworkItem {
-    course: string;
-    class: string;
-    marks: string;
-    sub_date: string;
-    // Add other properties as needed
-  }
   
-  const [Homework, setHomework] = useState<HomeworkItem>([]);
+  const [Homework, setHomework] = useState({
+    course: "",
+    class: "",
+    marks: "",
+    sub_date: "",
+    pre_date: "",
+    author:"",
+  });
   useEffect(() => {
     const Fetch = async () => {
       try {
