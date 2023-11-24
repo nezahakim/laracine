@@ -10,11 +10,11 @@ function Body() {
         password:'',
         save:''
     })
-    const HandleChange = (e) =>{
-        setInputs((prev)=>({...prev,[e.target.name]:[e.target.value]}))
+    const HandleChange = (e: { target: { name: any; value: any } }) =>{
+        setInputs((prev: any)=>({...prev,[e.target.name]:[e.target.value]}))
     }
 
-    const HandleSubmit = (e) =>{
+    const HandleSubmit = (e: { preventDefault: () => void }) =>{
         e.preventDefault()
         try{
             const a = async ()=> {
@@ -37,16 +37,25 @@ function Body() {
     }
 
 
-    const HandleLogin = () =>{
-        document.querySelector(".login-form")!.style.display = "flex";
-    }
-    window.onclick = (e) => {
-        if(e.target!.matches(".login-form")){
-            if(!e.target!.matches(".main-form")){
-                document.querySelector(".login-form")!.style.display = "none";
+    const HandleLogin = () => {
+        const loginForm = document.querySelector(".login-form") as HTMLElement | null;
+        if (loginForm) {
+            loginForm.style.display = "flex";
+        }
+    };
+    
+    window.onclick = (e: MouseEvent) => {
+        const loginForm = document.querySelector(".login-form") as HTMLElement | null;
+        
+        if (loginForm && e.target instanceof Element) {
+            if (e.target.matches(".login-form")) {
+                if (!e.target.matches(".main-form")) {
+                    loginForm.style.display = "none";
+                }
             }
         }
-    }
+    };
+    
 
   return (
     <>

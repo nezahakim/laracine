@@ -58,13 +58,13 @@ function Homework() {
     marks: 0,
   });
 
-  const HandleChange = (e) => {
-    setInputs((prev) => ({ ...prev, [e.target.name]: [e.target.value] }));
-    setUpdateData((prev) => ({ ...prev, [e.target.name]: [e.target.value] }));
+  const HandleChange = (e: { target: { name: any; value: any; }; }) => {
+    setInputs((prev: any) => ({ ...prev, [e.target.name]: [e.target.value] }));
+    setUpdateData((prev: any) => ({ ...prev, [e.target.name]: [e.target.value] }));
   };
   const [error, setError] = useState([]);
 
-  const HandleSubmit = (e) => {
+  const HandleSubmit = (e: { preventDefault: () => void; }) => {
     e.preventDefault();
 
     try {
@@ -94,7 +94,7 @@ function Homework() {
     }
   };
 
-  const HandleUpdateSubmit = (e) => {
+  const HandleUpdateSubmit = (e: { preventDefault: () => void; }) => {
     e.preventDefault();
 
     var Qid = window.localStorage.getItem("Question_id");
@@ -125,7 +125,7 @@ function Homework() {
   const [display, setDisplay] = useState({
     condition: false,
   });
-  const HandleUpdate = (e, index) => {
+  const HandleUpdate = (e: string, index: string) => {
     window.localStorage.setItem("Question_number", index);
     try {
       const a = async () => {
@@ -152,49 +152,57 @@ function Homework() {
     }
   };
 
-  const HandleAdd = () => {
+  const handleAdd = () => {
     setDisplay({
       condition: false,
     });
-    document.querySelector(".login-form")!.style.display = "flex";
+    const loginForm = document.querySelector(".login-form") as HTMLElement | null;
+    if (loginForm) {
+      loginForm.style.display = "flex";
+    }
   };
-  window.onclick = (e) => {
-    if (e.target!.matches(".login-form")) {
-      if (!e.target!.matches(".main-form")) {
-        document.querySelector(".login-form")!.style.display = "none";
+  
+  window.onclick = (e: MouseEvent) => {
+    const loginForm = document.querySelector(".login-form") as HTMLElement | null;
+    if (loginForm && e.target instanceof Element) {
+      if (e.target.matches(".login-form") && !e.target.matches(".main-form")) {
+        loginForm.style.display = "none";
       }
     }
   };
-
-  const HandleDelete = (e, index) => {
+  
+  const handleDelete = (questionId: string, index: string) => {
     window.localStorage.setItem("Delete_Question_Number", index);
-    window.localStorage.setItem("DeleteQuestion_id", e);
-    document.querySelector(".alert-delete")!.style.display = "flex";
-  };
-
-  const DeleteQuestion = () => {
-    var Dquestion_id = window.localStorage.getItem("DeleteQuestion_id");
-    try {
-      const a = async () => {
-        const data = await axios.get(
-          "http://localhost:8000/question/delete/" + Dquestion_id
-        );
-        var values = data.data;
-        if (values.status) {
-          document.querySelector(".alert-delete")!.style.display = "none";
-        } else {
-          console.log(values);
-        }
-      };
-      a();
-    } catch (error) {
-      console.log(error);
+    window.localStorage.setItem("DeleteQuestion_id", questionId);
+    const alertDelete = document.querySelector(".alert-delete") as HTMLElement | null;
+    if (alertDelete) {
+      alertDelete.style.display = "flex";
     }
   };
-
-  const CancelDelete = () => {
-    document.querySelector(".alert-delete")!.style.display = "none";
+  
+  const deleteQuestion = async () => {
+    const deleteQuestionId = window.localStorage.getItem("DeleteQuestion_id");
+    try {
+      const response = await axios.get(`http://localhost:8000/question/delete/${deleteQuestionId}`);
+      const values = response.data;
+      const alertDelete = document.querySelector(".alert-delete") as HTMLElement | null;
+      if (values.status && alertDelete) {
+        alertDelete.style.display = "none";
+      } else {
+        console.log(values);
+      }
+    } catch (error) {
+      console.error(error);
+    }
   };
+  
+  const cancelDelete = () => {
+    const alertDelete = document.querySelector(".alert-delete") as HTMLElement | null;
+    if (alertDelete) {
+      alertDelete.style.display = "none";
+    }
+  };
+  
 
   return (
     <>
@@ -206,8 +214,8 @@ function Homework() {
             <b> Question {localStorage.getItem("Delete_Question_Number")} </b>
           </p>
           <div className="buttons">
-            <button onClick={DeleteQuestion}>Yes</button>
-            <button onClick={CancelDelete}>Cancel</button>
+            <button onClick={deleteQuestion}>Yes</button>
+            <button onClick={cancelDelete}>Cancel</button>
           </div>
         </div>
       </div>
@@ -364,7 +372,7 @@ function Homework() {
             </div>
           </div>
           <div className="body-questions">
-            {questions.map((question, index) => (
+            {questions.map((question: { marks: any; question: any; id: any; }, index: number) => (
               <div className="single-question">
                 <div className="head">
                   <h4>Question: {index + 1}</h4>{" "}
@@ -381,7 +389,7 @@ function Homework() {
                     </button>
                     <button
                       className="del"
-                      onClick={() => HandleDelete(question.id, index + 1)}
+                      onClick={() => handleDelete(question.id, index + 1)}
                     >
                       Remove Question
                     </button>
@@ -394,7 +402,7 @@ function Homework() {
           </div>
           {Homework.author == unique_id ? (
             <div className="Add-new-question">
-              <div className="new-question-tag" onClick={HandleAdd}>
+              <div className="new-question-tag" onClick={handleAdd}>
                 <HiOutlinePlusCircle />
                 &nbsp;New Question
               </div>
