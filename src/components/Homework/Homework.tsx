@@ -33,6 +33,7 @@ function Homework() {
   
   const [Homework, setHomework] = useState({
     course: "",
+    names: "",
     class: "",
     marks: "",
     sub_date: "",
