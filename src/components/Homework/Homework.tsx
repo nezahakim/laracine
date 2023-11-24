@@ -30,7 +30,7 @@ function Homework() {
       Fetch();
     }, 300);
   }, []);
-  
+
   interface HomeworkItem {
     course: string;
     class: string;
@@ -39,7 +39,7 @@ function Homework() {
     // Add other properties as needed
   }
   
-  const [Homework, setHomework] = useState<HomeworkItem[]>([]);
+  const [Homework, setHomework] = useState<HomeworkItem>([]);
   useEffect(() => {
     const Fetch = async () => {
       try {
