@@ -9,29 +9,34 @@ import axios from "axios";
 import session, { unique_id } from "../auth/session";
 
 function Homeworks() {
-  var user = false;
-  if (session.getItem("userId") != null) {
-    if (session.getItem("userId").length > 0) {
-      // var unique_id = session.getItem('userId');
-      user = true;
-    }
-  }
-  console.log(session.getItem("userId"));
-
+  const [user, setUser] = useState(false);
   const [homework, setHomework] = useState([]);
+
   useEffect(() => {
-    const Fetch = async () => {
+    const fetchData = async () => {
       try {
-        const res = await axios.get("http://localhost:8000/homeworks");
+        const res = await axios.get('http://localhost:8000/homeworks');
         setHomework(res.data);
       } catch (err) {
-        console.log(err);
+        console.error(err);
       }
     };
-    setInterval(() => {
-      Fetch();
-    }, 300);
+    const intervalId = setInterval(fetchData, 300);
+    return () => clearInterval(intervalId);
   }, []);
+
+  useEffect(() => {
+    const userId = session.getItem('userId');
+    if (userId && userId.length > 0) {
+      // var unique_id = session.getItem('userId');
+      setUser(true);
+    }
+    console.log(userId);
+  }, []);
+
+
+  
+
 
   const [inputs, setInputs] = useState({
     course: "",
@@ -40,21 +45,24 @@ function Homeworks() {
     sub_date: "",
     unique_id: unique_id,
   });
-
+  
   const [updateData, setUpdateData] = useState({
     course: "",
     class: "",
     marks: "",
     sub_date: "",
   });
-
-  const HandleChange = (e) => {
-    setInputs((prev) => ({ ...prev, [e.target.name]: [e.target.value] }));
-    setUpdateData((prev) => ({ ...prev, [e.target.name]: [e.target.value] }));
+  
+  const HandleChange = (e: { target: { name: any; value: any; }; }) => {
+    const { name, value } = e.target;
+  
+    setInputs((prevInputs: any) => ({ ...prevInputs, [name]: value }));
+    setUpdateData((prevUpdateData: any) => ({ ...prevUpdateData, [name]: value }));
   };
+  
 
   const [error, setError] = useState([]);
-  const HandleSubmit = (e) => {
+  const HandleSubmit = (e: { preventDefault: () => void; }) => {
     e.preventDefault();
 
     try {
@@ -99,7 +107,8 @@ function Homeworks() {
     document.getElementById("ul")!.style.display = "block";
   };
 
-  const HandleWork = (e) => {
+  
+  const HandleWork = (e: string) => {
     window.localStorage.setItem("homework_id", e);
     console.log(e);
     location.href = "/homework";
@@ -109,20 +118,28 @@ function Homeworks() {
     setDisplay({
       condition: false,
     });
-    document.querySelector(".login-form")!.style.display = "flex";
+    const loginForm = document.querySelector(".login-form") as HTMLElement | null;
+    if (loginForm) {
+      loginForm.style.display = "flex";
+    }
   };
-  window.onclick = (e) => {
-    if (e.target!.matches(".login-form")) {
-      if (!e.target!.matches(".main-form")) {
-        document.querySelector(".login-form")!.style.display = "none";
+  window.onclick = (e: MouseEvent) => {
+    const loginForm = document.querySelector(".login-form") as HTMLElement | null;
+    const ulElement = document.getElementById("ul") as HTMLElement | null;
+  
+    if (loginForm && e.target instanceof Element) {
+      if (e.target.matches(".login-form") && !e.target.matches(".main-form")) {
+        loginForm.style.display = "none";
       }
     }
-    if (e.target!.matches(".p")) {
-      document.getElementById("ul")!.style.display = "none";
+  
+    if (ulElement && e.target instanceof Element && e.target.matches(".p")) {
+      ulElement.style.display = "none";
     }
   };
+  
 
-  const HandleUpdateSubmit = (e) => {
+  const HandleUpdateSubmit = (e: { preventDefault: () => void; }) => {
     e.preventDefault();
     var Qid = window.localStorage.getItem("Homework_Update_id");
     try {
@@ -137,7 +154,10 @@ function Homeworks() {
           setDisplay({
             condition: false,
           });
-          document.querySelector(".login-form")!.style.display = "none";
+          const loginForm = document.querySelector(".login-form") as HTMLElement | null;
+          if (loginForm) {
+            loginForm.style.display = "none";
+          }
           setError("");
         } else {
           console.log(values);
@@ -171,7 +191,10 @@ function Homeworks() {
             condition: true,
           });
           window.localStorage.setItem("Homework_Update_id", e);
-          document.querySelector(".login-form")!.style.display = "flex";
+          const loginForm = document.querySelector(".login-form") as HTMLElement | null;
+          if (loginForm) {
+            loginForm.style.display = "flex";
+          }
         } else {
           console.log(values);
         }
@@ -182,34 +205,53 @@ function Homeworks() {
     }
   };
 
-  const HandleDelete = (e) => {
+  const HandleDelete = (e: string) => {
     window.localStorage.setItem("DeleteHomework_id", e);
-    document.querySelector(".alert-delete")!.style.display = "flex";
+    const alertDelete = document.querySelector(".alert-delete") as HTMLElement | null;
+  
+    if (alertDelete) {
+      alertDelete.style.display = "flex";
+    }
   };
+  
 
   const DeleteQuestion = () => {
-    var Dquestion_id = window.localStorage.getItem("DeleteHomework_id");
+    const Dquestion_id = window.localStorage.getItem("DeleteHomework_id");
+  
     try {
       const a = async () => {
-        const data = await axios.get(
-          "http://localhost:8000/homework/delete/" + Dquestion_id
+        const response = await axios.get(
+          `http://localhost:8000/homework/delete/${Dquestion_id}`
         );
-        var values = data.data;
+  
+        const values = response.data;
+  
         if (values.status) {
-          document.querySelector(".alert-delete")!.style.display = "none";
+          const alertDelete = document.querySelector(".alert-delete") as HTMLElement | null;
+  
+          if (alertDelete) {
+            alertDelete.style.display = "none";
+          }
         } else {
           console.log(values);
         }
       };
+  
       a();
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   };
+  
 
   const CancelDelete = () => {
-    document.querySelector(".alert-delete")!.style.display = "none";
+    const alertDelete = document.querySelector(".alert-delete") as HTMLElement | null;
+  
+    if (alertDelete) {
+      alertDelete.style.display = "none";
+    }
   };
+  
 
   return (
     <>

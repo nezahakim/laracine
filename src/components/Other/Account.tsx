@@ -4,40 +4,44 @@ import BackEndLink from "../auth/BackEnd";
 import { useState } from "react";
 
 function Account() {
-    if(unique_id == '' && unique_id.length == 0){
-        console.log(unique_id)
-        window.location.href = "/home"
-    }else if(unique_id == null && session.length == 0){
-        console.log(unique_id)
-        window.location.href = "/home"
-    }
-
-    console.log(unique_id)
-    const HandleLogout = () =>{
-        if(unique_id != '' && unique_id!.length > 0){
-            session.setItem('userId','');
-            console.log(unique_id)
-            window.location.href = "/home"
+    if (unique_id === '' || unique_id!.length === 0) {
+        console.log(unique_id);
+        window.location.href = "/home";
+      } else if (unique_id === null || unique_id!.length === 0) {
+        console.log(unique_id);
+        window.location.href = "/home";
+      }
+      
+      console.log(unique_id);
+      
+      const HandleLogout = () => {
+        if (unique_id !== '' && unique_id!.length > 0) {
+          session.setItem('userId', '');
+          console.log(unique_id);
+          window.location.href = "/home";
         }
-    }
-    
-    const [AccountData, setAccountData] = useState([])
-    try{
-        const Fetch = async () =>{
-            const data = await axios.get(BackEndLink + "/account/" + unique_id)
-            var values = data.data
-            if(values.status){
-                setAccountData(values.data)
-                window.localStorage.setItem("AccountData",values.data)
-            }else{
-                console.log(values)
-            }
-        }
+      };
+      
+      const [AccountData, setAccountData] = useState([]);
+      
+      try {
+        const Fetch = async () => {
+          const response = await axios.get(BackEndLink + "/account/" + unique_id);
+          const values = response.data;
+      
+          if (values.status) {
+            setAccountData(values.data);
+            window.localStorage.setItem("AccountData", JSON.stringify(values.data));
+          } else {
+            console.log(values);
+          }
+        };
+      
         Fetch();
-    }catch(error){
-        console.log(error)
-    }
-
+      } catch (error) {
+        console.log(error);
+      }
+      
 
     return (
         <>

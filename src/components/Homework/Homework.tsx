@@ -82,7 +82,10 @@ function Homework() {
             marks: "",
             homework_id: homework_id,
           });
-          document.querySelector(".login-form")!.style.display = "none";
+          const loginForm = document.querySelector(".login-form") as HTMLElement | null;
+          if (loginForm) {
+            loginForm.style.display = "none";
+          }
           setError("");
         } else {
           setError(values);
@@ -109,7 +112,10 @@ function Homework() {
           setDisplay({
             condition: false,
           });
-          document.querySelector(".login-form")!.style.display = "none";
+          const loginForm = document.querySelector(".login-form") as HTMLElement | null;
+          if (loginForm) {
+            loginForm.style.display = "none";
+          }
           setError("");
         } else {
           console.log(values);
@@ -141,7 +147,10 @@ function Homework() {
             condition: true,
           });
           window.localStorage.setItem("Question_id", e);
-          document.querySelector(".login-form")!.style.display = "flex";
+          const loginForm = document.querySelector(".login-form") as HTMLElement | null;
+          if (loginForm) {
+            loginForm.style.display = "flex";
+          }
         } else {
           console.log(values);
         }
