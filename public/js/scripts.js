@@ -1,10 +1,3 @@
-/* Template: Corso - Free Training Course Landing Page Template
-   Author: Inovatik
-   Created: Nov 2019
-   Description: Custom JS file
-*/
-
-
 (function($) {
     "use strict"; 
 	
