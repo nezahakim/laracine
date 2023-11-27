@@ -1,8 +1,53 @@
 import { unique_id } from "../auth/session"
+import { useState,useEffect } from "react"
+
 
 function Navbar() {
+    
+    const [show,setShow] = useState(true)
+    var prevScrollPos = window.scrollY;
+
+    const constrolNavbar = () =>{
+        var currentScrollPos = window.scrollY;
+        if (prevScrollPos > currentScrollPos) {
+            setShow(true)
+        } else {
+            setShow(false)
+        }
+        prevScrollPos = currentScrollPos;     
+    }
+    useEffect(()=>{
+        window.addEventListener('scroll',constrolNavbar)
+        return () =>{
+            window.removeEventListener('scroll',constrolNavbar)
+        }
+    },[])
+    
+    const [collapse,setCollapse] = useState(false)
+    const handleCollapse = () =>{
+        setCollapse(!collapse)
+    }
+
+    const [nav_collapse,setNav_collapse] = useState(false)
+    useEffect(() => {
+        const handleScroll = () => {
+            if (window.scrollY > 100) {
+                setNav_collapse(true)
+            } else {
+                setNav_collapse(false)
+            }
+        };
+    
+        window.addEventListener('scroll', handleScroll);
+        window.addEventListener('load', handleScroll);
+        return () => {
+          window.removeEventListener('scroll', handleScroll);
+        };
+      }, []);
+
+
   return (
-    <nav className="navbar navbar-expand-lg navbar-dark navbar-custom fixed-top">
+    <nav className={`${show ? `navbar-scroll-show`:`navbar-scroll-hide`} navbar navbar-expand-lg navbar-dark navbar-custom fixed-top ${nav_collapse && 'top-nav-collapse'} `}>
 
         {/* <!-- Text Logo - Use this if you don't have a graphic logo --> */}
         {/* <!-- <a className="navbar-brand logo-text page-scroll" href="index.html">Corso</a> --> */}
@@ -11,13 +56,13 @@ function Navbar() {
         <a className="navbar-brand logo-image" href="/"><img src="./system/logo.jpg" className="logo" alt="alternative" /></a>
 
         {/* <!-- Mobile Menu Toggle Button --> */}
-        <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
+        <button onClick={handleCollapse} className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded={`${collapse ? 'true' : 'false'}`} aria-label="Toggle navigation">
             <span className="navbar-toggler-awesome fas fa-bars"></span>
             <span className="navbar-toggler-awesome fas fa-times"></span>
         </button>
         {/* <!-- end of mobile menu toggle button --> */}
 
-        <div className="ul-ul collapse navbar-collapse" id="navbarsExampleDefault">
+        <div className={`ul-ul ${ collapse ? '':'collapse' } navbar-collapse`} id="navbarsExampleDefault">
             <ul className="navbar-nav ml-auto">
                 <li className="nav-item">
                     <a className="nav-link page-scroll" href="/">HOME <span className="sr-only">(current)</span></a>
